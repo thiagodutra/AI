@@ -49,6 +49,7 @@ public class Tabuleiro {
 		}
 	}
 
+
 	private void setUpTabuleiro() {
 		numPeaoBrancas = 12;
 		numPeaoPretas = 12;
@@ -74,6 +75,7 @@ public class Tabuleiro {
 		populateEmptyOnBoard();
 	}
 
+	// preenche a parte vazia do tabuleiro
 	private void populateEmptyOnBoard() {
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board[i].length; j++) {
@@ -120,7 +122,7 @@ public class Tabuleiro {
 		return numPeaoPretas;
 	}
 
-	// returns true if move successful
+	// Retorna verdadeiro se o movimento é válido
 	public Decisao makeMove(Move move, Player.Side side) {
 		if (move == null) {
 			return Decisao.FIM_JOGO;
@@ -132,25 +134,25 @@ public class Tabuleiro {
 		int endRow = end.x;
 		int endCol = end.y;
 
-		// can only move own piece and not empty space
-		if (!isMovingOwnPiece(startRow, startCol, side) || getPeca(startRow, startCol) == Type.VAZIO)
+		// Só pode mover sua peca e não pode ser um espaço vazio
+		if (!isSuaPeca(startRow, startCol, side) || getPeca(startRow, startCol) == Type.VAZIO)
 			return Decisao.MOVIMENTO_FALHO_PECA_INVALIDA;
 
 		List<Move> possibleMoves = getValidMoves(startRow, startCol, side);
 		// System.out.println(possibleMoves);
 
-		Type currType = getPeca(startRow, startCol);
+		Type currentType = getPeca(startRow, startCol);
 
 		if (possibleMoves.contains(move)) {
 			boolean jumpMove = false;
 			// if it contains move then it is either 1 move or 1 jump
 			if (startRow + 1 == endRow || startRow - 1 == endRow) {
 				board[startRow][startCol] = Type.VAZIO;
-				board[endRow][endCol] = currType;
+				board[endRow][endCol] = currentType;
 			} else {
 				jumpMove = true;
 				board[startRow][startCol] = Type.VAZIO;
-				board[endRow][endCol] = currType;
+				board[endRow][endCol] = currentType;
 				Point mid = findMidSquare(move);
 
 				Type middle = getPeca(mid);
@@ -187,6 +189,7 @@ public class Tabuleiro {
 			return Decisao.FALHA_DESTINO_INVALIDO;
 	}
 
+	//PEga todos os movimentos possiveis
 	public List<Move> getAllValidMoves(Player.Side side) {
 
 		Type normal = side == Player.Side.PRETAS ? Type.PRETA : Type.BRANCA;
@@ -209,7 +212,8 @@ public class Tabuleiro {
 
 		return ret;
 	}
-
+	
+	//Pega os movimentos validos no tabuleiro
 	public List<Move> getValidMoves(int row, int col, Player.Side side) {
 		Type type = board[row][col];
 		Point startPoint = new Point(row, col);
@@ -218,9 +222,9 @@ public class Tabuleiro {
 
 		List<Move> moves = new ArrayList<>();
 
-		// 4 possible moves, 2 if not king
+		// 4 movimentos possiveis, 2 se nao for dama
 		if (type == Type.BRANCA || type == Type.PRETA) {
-			// 2 possible moves
+			// 2 movimentos possiveis
 			int rowChange = type == Type.BRANCA ? 1 : -1;
 
 			int newRow = row + rowChange;
@@ -234,9 +238,9 @@ public class Tabuleiro {
 			}
 
 		}
-		// must be king
+		// eh uma dama
 		else {
-			// 4 possible moves
+			// Tem 4 movimentos possiveis
 
 			int newRow = row + 1;
 			if (newRow < SIZE) {
@@ -262,7 +266,8 @@ public class Tabuleiro {
 		moves.addAll(getValidSkipMoves(row, col, side));
 		return moves;
 	}
-
+	
+	//Pega os movimentos de 'comer' validos
 	public List<Move> getValidSkipMoves(int row, int col, Player.Side side) {
 		List<Move> move = new ArrayList<>();
 		Point start = new Point(row, col);
@@ -286,17 +291,17 @@ public class Tabuleiro {
 			Point temp = possibilities.get(i);
 			Move m = new Move(start, temp);
 			if (temp.x < SIZE && temp.x >= 0 && temp.y < SIZE && temp.y >= 0 && getPeca(temp.x, temp.y) == Type.VAZIO
-					&& isOpponentPiece(side, getPeca(findMidSquare(m)))) {
+					&& isOponente(side, getPeca(findMidSquare(m)))) {
 				move.add(m);
 			}
 		}
 
-		// System.out.println("Skip moves: " + move);
+		
 		return move;
 	}
 
-	// return true if the piece is opponents
-	private boolean isOpponentPiece(Player.Side current, Type opponentPiece) {
+	// Retorna verdadeira se a peça é do oponente
+	private boolean isOponente(Player.Side current, Type opponentPiece) {
 		if (current == Player.Side.PRETAS && (opponentPiece == Type.BRANCA || opponentPiece == Type.DAMA_BRANCA))
 			return true;
 		if (current == Player.Side.BRANCAS && (opponentPiece == Type.PRETA || opponentPiece == Type.DAMA_PRETA))
@@ -304,7 +309,7 @@ public class Tabuleiro {
 		return false;
 	}
 
-	private boolean isMovingOwnPiece(int row, int col, Player.Side side) {
+	private boolean isSuaPeca(int row, int col, Player.Side side) {
 		Type pieceType = getPeca(row, col);
 		if (side == Player.Side.PRETAS && pieceType != Type.PRETA && pieceType != Type.DAMA_PRETA)
 			return false;

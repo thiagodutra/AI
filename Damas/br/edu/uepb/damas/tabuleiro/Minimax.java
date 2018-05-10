@@ -25,6 +25,7 @@ public class Minimax extends Player implements AI {
 		this.totalTimeElapsed = 0;
 	}
 
+	//Faz movimento
 	public Decisao makeMove(Tabuleiro Tabuleiro) {
 		numMovimentosChamados++;
 		long startTime = System.nanoTime();
@@ -41,6 +42,8 @@ public class Minimax extends Player implements AI {
 		return totalTimeElapsed / numMovimentosChamados * Math.pow(10, -6) + " milisegundos";
 	}
 
+	
+	//Inicio Minimax
 	private Move minimaxStart(Tabuleiro Tabuleiro, int profundidade, Side side, boolean maximizingPlayer) {
 		double alpha = Double.NEGATIVE_INFINITY;
 		double beta = Double.POSITIVE_INFINITY;
@@ -81,7 +84,7 @@ public class Minimax extends Player implements AI {
 				i--;
 			}
 		}
-		// Main.println("Filtered/max heuristica: " + heuristica);
+		
 		return possibleMoves.get(rand.nextInt(possibleMoves.size()));
 	}
 
@@ -94,6 +97,7 @@ public class Minimax extends Player implements AI {
 
 		double initial = 0;
 		Tabuleiro tempTabuleiro = null;
+		//Maximizando
 		if (maximizingPlayer) {
 			initial = Double.NEGATIVE_INFINITY;
 			for (int i = 0; i < possibleMoves.size(); i++) {
@@ -102,7 +106,8 @@ public class Minimax extends Player implements AI {
 
 				double result = minimax(tempTabuleiro, profundidade - 1, flipSide(side), !maximizingPlayer, alpha,
 						beta);
-
+				
+				//Poda
 				initial = Math.max(result, initial);
 				alpha = Math.max(alpha, initial);
 
@@ -119,7 +124,8 @@ public class Minimax extends Player implements AI {
 
 				double result = minimax(tempTabuleiro, profundidade - 1, flipSide(side), !maximizingPlayer, alpha,
 						beta);
-
+				
+				//Poda
 				initial = Math.min(result, initial);
 				alpha = Math.min(alpha, initial);
 
@@ -132,11 +138,12 @@ public class Minimax extends Player implements AI {
 	}
 
 	private double getHeuristic(Tabuleiro t) {
-		// naive implementation
+		// heuristica simples
 		// if(getSide() == Side.BRANCAS)
 		// return b.getNumWhitePieces() - b.getNumBlackPieces();
 		// return b.getNumBlackPieces() - b.getNumWhitePieces();
 
+		//Mais elaborada
 		double pesoDama = 1.2;
 		double result = 0;
 		if (getSide() == Side.BRANCAS)

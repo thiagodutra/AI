@@ -7,11 +7,11 @@ import br.edu.uepb.damas.tabuleiro.Tabuleiro.Decisao;
 public class Main {
 
 	public static double total = 1;
-	public static boolean multipleRoundsTest = false;
+	public static boolean jogadasMultiplas = false;
 
 	public static void main(String[] args) throws InterruptedException {
 
-//		multipleRoundsTest = total > 1;
+		jogadasMultiplas = total > 1;
 		Player one = new Player("Player 1", Player.Side.PRETAS);
 
 		Minimax two = new Minimax(Player.Side.BRANCAS, 6);
@@ -115,17 +115,17 @@ public class Main {
 	}
 
 	public static void println(String s) {
-		if (!multipleRoundsTest)
+		if (!jogadasMultiplas)
 			System.out.println(s);
 	}
 
 	public static void print(String s) {
-		if (!multipleRoundsTest)
+		if (!jogadasMultiplas)
 			System.out.print(s);
 	}
 
 	public static void println() {
-		if (!multipleRoundsTest)
+		if (!jogadasMultiplas)
 			System.out.println();
 	}
 }

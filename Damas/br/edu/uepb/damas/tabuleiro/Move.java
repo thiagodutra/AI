@@ -12,6 +12,8 @@ public class Move {
         start = new Point(startRow, startCol);
         end = new Point(endRow, endCol);
     }
+    //Transforma a entrada em pontos, ex: 0 5 1 6
+    //onde 0 5 é onde esta a peça e 1 6 para onde a peça deve ir (se possível)
     public Move(Point start, Point end)
     {
         this.start = start;
